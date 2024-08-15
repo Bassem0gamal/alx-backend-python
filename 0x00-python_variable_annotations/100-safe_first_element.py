@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 ''' safe first element '''
-from typing import Union, Sequence, Any 
+from typing import Union, Sequence, Any
 
 
 def safe_first_element(lst: Sequence[Any]) -> Union[Any, None]:
@@ -9,4 +9,3 @@ def safe_first_element(lst: Sequence[Any]) -> Union[Any, None]:
         return lst[0]
     else:
         return None
-        
