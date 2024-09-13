@@ -3,7 +3,7 @@
 
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 from typing import (
     Mapping,
     Sequence,
@@ -41,7 +41,7 @@ class TestAccessNestedMap(unittest.TestCase):
 
 
 class TestGetJson(unittest.TestCase):
-    """ Test the get_json """
+    """ Test the get_json is working """
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
@@ -51,7 +51,29 @@ class TestGetJson(unittest.TestCase):
         self, test_url: str, test_payload: Dict[str, bool],
         mock_get: unittest.mock.Mock
     ) -> None:
-        """ Test the get_json """
+        """ Test the get_json is working """
         mock_get.return_value.json.return_value = test_payload
         self.assertEqual(get_json(test_url), test_payload)
         mock_get.assert_called_once_with(test_url)
+
+
+class TestMemoize(unittest.TestCase):
+    """ Test the memoize """
+    class TestClass:
+        """ Inner class for testing memoize decorator """
+        def a_method(self):
+            """ Method to mock """
+            return 42
+
+        @memoize
+        def a_property(self):
+            """ Property to test """
+            return self.a_method()
+
+    @unittest.mock.patch.object(TestClass, 'a_method')
+    def test_memoize(self, mock_a_method: unittest.mock.Mock) -> None:
+        """ Test the memoize """
+        test_class = TestMemoize.TestClass()
+        test_class.a_property()
+        test_class.a_property()
+        mock_a_method.assert_called_once()
