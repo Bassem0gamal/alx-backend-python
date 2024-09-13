@@ -58,21 +58,21 @@ class TestGetJson(unittest.TestCase):
 
 
 class TestMemoize(unittest.TestCase):
-    """ Test the memoize """
+    """ Testing the memoize function """
     class TestClass:
-        """ Inner class for testing memoize decorator """
+        """ A class for testing memoize decorator """
         def a_method(self):
-            """ Method to mock """
+            """ Method to get mocked """
             return 42
 
         @memoize
         def a_property(self):
-            """ Property to test """
+            """ Property to get tested """
             return self.a_method()
 
     @unittest.mock.patch.object(TestClass, 'a_method')
     def test_memoize(self, mock_a_method: unittest.mock.Mock) -> None:
-        """ Test the memoize """
+        """ Testing the memoize function """
         test_class = TestMemoize.TestClass()
         test_class.a_property()
         test_class.a_property()
