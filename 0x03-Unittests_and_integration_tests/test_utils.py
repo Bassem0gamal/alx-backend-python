@@ -3,14 +3,13 @@
 
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map
+from utils import access_nested_map, get_json
 from typing import (
     Mapping,
     Sequence,
     Any,
     Dict,
 )
-from utils import get_json
 
 
 class TestAccessNestedMap(unittest.TestCase):
