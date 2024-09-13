@@ -24,3 +24,16 @@ class TestAccessNestedMap(unittest.TestCase):
     ) -> None:
         """ Test access_nested_map is working """
         self.assertEqual(access_nested_map(nested_map, path), expected)
+
+    @parameterized.expand([
+        (dict(), ("a",), "'a'"),
+        ({"a": 1}, ("a", "b"), "'b'"),
+    ])
+    def test_access_nested_map_exception(
+        self, nested_map: Mapping[str, Any],
+        path: Sequence[str], expected_msg: str
+    ) -> None:
+        """ Test access_nested_map with raise """
+        with self.assertRaises(KeyError) as e:
+            access_nested_map(nested_map, path)
+        self.assertEqual(str(e.exception), expected_msg)
