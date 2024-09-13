@@ -13,7 +13,6 @@ from typing import (
 from utils import get_json
 
 
-
 class TestAccessNestedMap(unittest.TestCase):
     """ Test access_nested_map """
     @parameterized.expand([
