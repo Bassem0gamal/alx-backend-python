@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Unitesting """
+""" Unitesting for utils.py """
 
 import unittest
 from parameterized import parameterized
@@ -13,7 +13,7 @@ from typing import (
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """ Test access_nested_map """
+    """ Testing access_nested_map """
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
@@ -23,7 +23,7 @@ class TestAccessNestedMap(unittest.TestCase):
         self, nested_map: Mapping[str, Any],
         path: Sequence[str], expected: Any
     ) -> None:
-        """ Test access_nested_map is working """
+        """ Testing access_nested_map is working """
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
