@@ -3,9 +3,10 @@
 
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from typing import Dict
+import fixtures
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -62,3 +63,48 @@ class TestGithubOrgClient(unittest.TestCase):
         """ Test the GithubOrgClient.has_license """
         client = GithubOrgClient("google")
         self.assertEqual(client.has_license(repo, license_key), expected)
+
+
+@parameterized_class(
+    ["org_payload", "repos_payload", "expected_repos", "apache2_repos"],
+    fixtures.TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ Integration test for requests.get  """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """ Setup class for TestIntegrationGithubOrgClient """
+        cls.get_patcher = patch("requests.get")
+        cls.mock_get = cls.get_patcher.start()
+        cls.mock_responses = [
+            unittest.mock.Mock(json=lambda: cls.org_payload),
+            unittest.mock.Mock(json=lambda: cls.repos_payload),
+        ]
+
+        def side_effect(url):
+            """ Side effect """
+            if url == GithubOrgClient.ORG_URL.format(org="google"):
+                return cls.mock_responses[0]
+            elif url == GithubOrgClient.ORG_URL\
+                    .format(org="google") + "/repos":
+                return cls.mock_responses[1]
+            else:
+                return unittest.mock.Mock(json=lambda: [])
+        cls.mock_get.side_effect = side_effect
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """ Teardown class for TestIntegrationGithubOrgClient """
+        cls.get_patcher.stop()
+
+    def test_public_repos(self) -> None:
+        """ Test the GithubOrgClient.public_repos """
+        client = GithubOrgClient("google")
+        self.assertEqual(client.public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self) -> None:
+        """Test the GithubOrgClient.public_repos with license arg """
+        client = GithubOrgClient("google")
+        self.assertEqual(client.public_repos(license="apache-2.0"),
+                         self.apache2_repos)
